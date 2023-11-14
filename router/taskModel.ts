@@ -1,18 +1,28 @@
-import { Router } from "express";
-import {
-	createTodo,
-	viewOneAndDeleteTodo,
-	viewOneAndUpdateTodo,
-	viewOneTodo,
-	viewTodos,
-} from "../controller/todoController";
+import { Document, Schema, model } from "mongoose";
+import { iTodo } from "../utils/interface";
 
-const router: Router = Router();
+export interface iTodoData extends iTodo, Document {}
 
-router.route("/create-todo").post(createTodo);
-router.route("/view-todos").get(viewTodos);
-router.route("/view-todo").get(viewOneTodo);
-router.route("/update-todo/:todoID").patch(viewOneAndUpdateTodo);
-router.route("/delete-todo/:todoID").delete(viewOneAndDeleteTodo);
+const todoModel = new Schema<iTodoData>(
+	{
+		task: {
+			type: String,
+		},
+		achieved: {
+			type: String || null,
+			default: null,
+		},
+		deadLine: {
+			type: String,
+		},
+		done: {
+			type: String,
+			default: "start",
+		},
+	},
+	{
+		timestamps: true,
+	}
+);
 
-export default router;
+export default model<iTodoData>("todos", todoModel);
